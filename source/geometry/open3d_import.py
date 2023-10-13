@@ -4,16 +4,16 @@ from packaging import version
 if version.parse('0.6.0') < version.parse(o3d.__version__):
     PointCloud = o3d.geometry.PointCloud
     Vector3dVector = o3d.utility.Vector3dVector
-    Feature = o3d.registration.Feature
+    Feature = o3d.pipelines.registration.Feature
     read_point_cloud = o3d.io.read_point_cloud
-    registration_ransac_based_on_feature_matching = o3d.registration.registration_ransac_based_on_feature_matching
-    registration_icp = o3d.registration.registration_icp
-    TransformationEstimationPointToPoint = o3d.registration.TransformationEstimationPointToPoint
-    CorrespondenceCheckerBasedOnEdgeLength = o3d.registration.CorrespondenceCheckerBasedOnEdgeLength
-    CorrespondenceCheckerBasedOnDistance = o3d.registration.CorrespondenceCheckerBasedOnDistance
-    CorrespondenceCheckerBasedOnNormal = o3d.registration.CorrespondenceCheckerBasedOnNormal
-    TransformationEstimationPointToPlane = o3d.registration.TransformationEstimationPointToPlane
-    RANSACConvergenceCriteria = o3d.registration.RANSACConvergenceCriteria
+    registration_ransac_based_on_feature_matching = o3d.pipelines.registration.registration_ransac_based_on_feature_matching
+    registration_icp = o3d.pipelines.registration.registration_icp
+    TransformationEstimationPointToPoint = o3d.pipelines.registration.TransformationEstimationPointToPoint
+    CorrespondenceCheckerBasedOnEdgeLength = o3d.pipelines.registration.CorrespondenceCheckerBasedOnEdgeLength
+    CorrespondenceCheckerBasedOnDistance = o3d.pipelines.registration.CorrespondenceCheckerBasedOnDistance
+    CorrespondenceCheckerBasedOnNormal = o3d.pipelines.registration.CorrespondenceCheckerBasedOnNormal
+    TransformationEstimationPointToPlane = o3d.pipelines.registration.TransformationEstimationPointToPlane
+    RANSACConvergenceCriteria = o3d.pipelines.registration.RANSACConvergenceCriteria
     KDTreeFlann = o3d.geometry.KDTreeFlann
 else:
     PointCloud = o3d.PointCloud

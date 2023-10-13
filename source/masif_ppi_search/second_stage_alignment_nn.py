@@ -16,7 +16,7 @@ import copy
 import scipy.sparse as spio
 from default_config.masif_opts import masif_opts
 import sys
-
+from IPython.core.debugger import set_trace
 """
 second_stage_alignment_nn.py: Second stage alignment code for benchmarking MaSIF-search.
                             This code benchmarks MaSIF-search by generating 3D alignments
@@ -93,7 +93,7 @@ rand_list = np.copy(pdb_list)
 #np.random.seed(0)
 np.random.shuffle(rand_list)
 rand_list = rand_list[0:100]
-
+# rand_list = np.copy(pdb_list)[0:1]
 p2_descriptors_straight = []
 p2_point_clouds = []
 p2_patch_coords = []
@@ -106,10 +106,13 @@ for i, pdb in enumerate(rand_list):
     pdb_id = pdb.split("_")[0]
     chains = pdb.split("_")[1:]
     # Descriptors for global matching.
-    p2_descriptors_straight.append(
-        np.load(os.path.join(desc_dir, pdb, "p2_desc_straight.npy"))
-    )
-
+    p2_desc_strait_path = os.path.join(desc_dir, pdb, "p2_desc_straight.npy")
+    if os.path.exists(p2_desc_strait_path):
+        p2_descriptors_straight.append(
+            np.load(p2_desc_strait_path)
+        )
+    else:
+        continue
     p2_point_clouds.append(
         read_point_cloud(
             os.path.join(surf_dir, "{}.ply".format(pdb_id + "_" + chains[1]))
@@ -122,8 +125,8 @@ for i, pdb in enumerate(rand_list):
     p2_patch_coords.append(pc)
 
     p2_names.append(pdb)
-
-
+rand_list = np.copy(p2_names)
+np.random.shuffle(rand_list)
 import time
 import scipy.spatial
 
@@ -163,7 +166,6 @@ for target_ix, target_pdb in enumerate(rand_list):
     all_pdb_id = []
     all_vix = []
     gt_dists = []
-
     # This is where the desriptors are actually compared (stage 1 of the MaSIF-search protocol)
     for source_ix, source_pdb in enumerate(rand_list):
 
@@ -250,6 +252,8 @@ for target_ix, target_pdb in enumerate(rand_list):
         random_transformation = get_center_and_random_rotate(source_pcd)
         source_pcd.transform(random_transformation)
         # Dock and score each matched patch. 
+        confidence = 0.999
+        mutual_filter = False
         all_results, all_source_patch, all_source_scores = multidock(
             source_pcd,
             source_coords,
@@ -258,11 +262,12 @@ for target_ix, target_pdb in enumerate(rand_list):
             target_patch,
             target_patch_descs,
             target_ckdtree,
+            mutual_filter,
             nn_model, 
-            ransac_iter=ransac_iter
+            ransac_iter=ransac_iter,
+            confidence=confidence
         )
         num_negs = num_negs
-
         # If this is the source_pdb, get the ground truth. The ground truth evaluation time is ignored for this and all other methods. 
         gt_start_time = time.clock()
         if source_pdb == target_pdb:

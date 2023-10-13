@@ -4,7 +4,7 @@ from Bio.PDB import *
 import sys
 import importlib
 import os
-
+# sys.path.append('/data/intern/fuxiaohai/software/masif/source')
 from default_config.masif_opts import masif_opts
 # Local includes
 from input_output.protonate import protonate

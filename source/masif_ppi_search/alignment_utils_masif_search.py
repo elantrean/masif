@@ -138,9 +138,11 @@ def multidock(
     target_pcd, # The target patch's point cloud
     target_descs, # The descriptors for the target patch
     target_ckdtree, # A kd-tree for the target patch for fast searches. 
+    mutual_filter,
     nn_model, # The neural network model
     ransac_radius=1.0, # The radius fro RANSAC inliers.
     ransac_iter=2000,
+    confidence=0.999,
     use_icp=True
 ):
     """
@@ -166,6 +168,7 @@ def multidock(
             target_pcd,
             source_patch_descs,
             target_descs,
+            mutual_filter,
             ransac_radius,
             TransformationEstimationPointToPoint(False),
             3,
@@ -174,7 +177,7 @@ def multidock(
                 CorrespondenceCheckerBasedOnDistance(1.5),
                 CorrespondenceCheckerBasedOnNormal(np.pi / 2),
             ],
-            RANSACConvergenceCriteria(ransac_iter, 500)
+            RANSACConvergenceCriteria(max_iteration=ransac_iter, confidence=9.990000e-01)
         )
         # Optimize the alignment using RANSAC.
         if use_icp:
@@ -298,10 +301,10 @@ def subsample_patch_coords(pdb, pid, precomp_dir, cv=None):
     """
 
     if cv is None:
-        pc = np.load(os.path.join(precomp_dir, pdb, pid+'_list_indices.npy'))
+        pc = np.load(os.path.join(precomp_dir, pdb, pid+'_list_indices.npy'), allow_pickle=True)
     else:
         pc = {}
-        coords = np.load(os.path.join(precomp_dir, pdb, pid+'_list_indices.npy'))[cv]
+        coords = np.load(os.path.join(precomp_dir, pdb, pid+'_list_indices.npy'), allow_pickle=True)[cv]
         for iii, v in enumerate(cv):
             pc[v] = coords[iii]
 

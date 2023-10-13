@@ -1,12 +1,11 @@
 Python
 PyMesh
-reduce
-MSMS
+# reduce, MSMS included in Ambertools23
 biopython
 pdb2pqr
-multivalue
+# multivalue
 APBS
-open3D
+open3d
 Pymol
-Tensorflow
+tensorflow
 colour

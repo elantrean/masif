@@ -85,9 +85,10 @@ for count, ppi_pair_id in enumerate(ppi_list):
     print(ppi_pair_id)
 
     out_desc_dir = os.path.join(params["desc_dir"], ppi_pair_id)
-    if not os.path.exists(os.path.join(out_desc_dir, 'p1_desc_straight.npy')):
+    if not os.path.exists(out_desc_dir):
         os.mkdir(out_desc_dir)
-#    else:
+    else:
+        continue
 #        # Ignore this one as it was already computed.
 #        print('Ignoring descriptor computation for {} as it was already computed'.format(ppi_pair_id))
 #        continue
@@ -107,7 +108,7 @@ for count, ppi_pair_id in enumerate(ppi_list):
             mylabels = labels[0]
             labels = np.median(mylabels, axis=1)
         except:# Exception, e:
-            print('Could not open '+in_dir+'p1'+'_sc_labels.npy: '+str(e))
+            print('Could not open '+in_dir+'p1'+'_sc_labels.npy')
             continue
         print("Number of vertices: {}".format(len(labels)))
 

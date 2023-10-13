@@ -20,20 +20,20 @@ Released under an Apache License 2.0
 class ScoreNN:
 
     def __init__(self):
-        config = tf.ConfigProto()
+        config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True
-        session = tf.Session(config=config)
+
 
         np.random.seed(42)
-        tf.random.set_random_seed(42)
+        tf.random.set_seed(42)
 
         reg = keras.regularizers.l2(l=0.0)
-        model = keras.models.Sequential()
+        model = keras.Sequential()
 
-        model.add(keras.layers.Conv1D(filters=8,kernel_size=1,strides=1))
+        model.add(keras.layers.Conv1D(filters=8,kernel_size=1,strides=1, input_shape=(200,3)))
         model.add(keras.layers.BatchNormalization())
         model.add(keras.layers.ReLU())
-        model.add(keras.layers.Conv1D(filters=16,kernel_size=1,strides=1, input_shape=(200,3)))
+        model.add(keras.layers.Conv1D(filters=16,kernel_size=1,strides=1))
         model.add(keras.layers.BatchNormalization())
         model.add(keras.layers.ReLU())
         model.add(keras.layers.Conv1D(filters=32,kernel_size=1,strides=1))
@@ -59,12 +59,12 @@ class ScoreNN:
 
         opt = keras.optimizers.Adam(lr=1e-4)
         model.compile(optimizer=opt,loss='sparse_categorical_crossentropy',metrics=['accuracy'])
-
+        
         self.model = model
         self.restore_model()
 
     def restore_model(self):
-        self.model.load_weights('models/nn_score/trained_model.hdf5')
+        self.model.load_weights('models/nn_score/new.hdf5')
 
     def train_model(self, features, labels, n_negatives, n_positives):
         callbacks = [
@@ -75,7 +75,7 @@ class ScoreNN:
 
 
     def eval(self, features):
-        #set_trace()
+        # set_trace()
         y_test_pred = self.model.predict(features)
         return y_test_pred
 

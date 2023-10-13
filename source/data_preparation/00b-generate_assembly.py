@@ -1,5 +1,6 @@
 import os
 import sys
+from IPython.core.debugger import set_trace
 from SBI.structure import PDB
 from default_config.masif_opts import masif_opts
 
@@ -18,6 +19,7 @@ def assemble(pdb_id):
         struct_assembly = struct.apply_biomolecule_matrices()[0]
     except:
         return 0
+    set_trace()
     struct_assembly.write(
         os.path.join(masif_opts["ligand"]["assembly_dir"], "{}.pdb".format(pdb_id))
     )

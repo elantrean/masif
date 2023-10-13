@@ -2,6 +2,7 @@ import os
 import numpy
 from subprocess import Popen, PIPE
 import pymesh
+from IPython.core.debugger import set_trace
 
 from default_config.global_vars import apbs_bin, pdb2pqr_bin, multivalue_bin
 import random
@@ -23,12 +24,13 @@ def computeAPBS(vertices, pdb_file, tmp_file_base):
     pdbname = pdb_file.split("/")[-1]
     args = [
         pdb2pqr_bin,
-        "--ff=parse",
+        "--ff=PARSE",
         "--whitespace",
         "--noopt",
         "--apbs-input",
+        filename_base+".in",
         pdbname,
-        filename_base,
+        filename_base+".pqr",
     ]
     p2 = Popen(args, stdout=PIPE, stderr=PIPE, cwd=directory)
     stdout, stderr = p2.communicate()
@@ -41,28 +43,27 @@ def computeAPBS(vertices, pdb_file, tmp_file_base):
     for vert in vertices:
         vertfile.write("{},{},{}\n".format(vert[0], vert[1], vert[2]))
     vertfile.close()
-
     args = [
         multivalue_bin,
         filename_base + ".csv",
-        filename_base + ".dx",
-        filename_base + "_out.csv",
+        filename_base + ".pqr.dx",
+        filename_base + "_out."
+        "dx",
     ]
     p2 = Popen(args, stdout=PIPE, stderr=PIPE, cwd=directory)
     stdout, stderr = p2.communicate()
 
     # Read the charge file
-    chargefile = open(tmp_file_base + "_out.csv")
+    chargefile = open(tmp_file_base + "_out.dx")
     charges = numpy.array([0.0] * len(vertices))
     for ix, line in enumerate(chargefile.readlines()):
         charges[ix] = float(line.split(",")[3])
 
     remove_fn = os.path.join(directory, filename_base)
-    os.remove(remove_fn)
+    os.remove(remove_fn+".pqr")
     os.remove(remove_fn+'.csv')
-    os.remove(remove_fn+'.dx')
+    os.remove(remove_fn+'.pqr.dx')
     os.remove(remove_fn+'.in')
-    os.remove(remove_fn+'-input.p')
-    os.remove(remove_fn+'_out.csv')
+    os.remove(remove_fn+'_out.dx')
 
     return charges

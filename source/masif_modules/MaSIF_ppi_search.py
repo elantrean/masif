@@ -319,11 +319,11 @@ class MaSIF_ppi_search:
                 # Create a session for running Ops on the Graph.
                 config = tf.ConfigProto(allow_soft_placement=True)
                 config.gpu_options.allow_growth = True
-                self.session = tf.Session(config=config)
-                self.saver = tf.train.Saver()
+                self.session = tf.compat.v1.Session(config=config)
+                self.saver = tf.compat.v1.train.Saver()
 
                 # Run the Op to initialize the variables.
-                init = tf.global_variables_initializer()
+                init = tf.compat.v1.global_variables_initializer()
                 self.session.run(init)
                 self.count_number_parameters()
 

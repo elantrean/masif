@@ -341,13 +341,13 @@ def compute_theta_all_fast(D, vertices, faces, normals, idx, radius):
 
         # Plane_i: the 2D plane for all neighbors of i
         tic = time.clock()
+        pair_dist_i = np.asarray(pair_dist_i)
         plane_i = call_mds(mymds, pair_dist_i)
         toc = time.clock()
         only_mds += (toc - tic)
     
         # Compute the angles on the plane.
         theta = compute_thetas(plane_i, i, vertices, faces, normals, neigh_i, idx)
-
         # We now must assign angles to all points kk that are between radius/2 and radius from the center.
         kk = np.where(D[i][neigh] >= radius/2)[1]
         neigh_k = neigh[1][kk]
